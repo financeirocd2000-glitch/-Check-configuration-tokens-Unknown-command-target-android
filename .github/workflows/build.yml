@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Baixar código
+      - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Configurar Python
+      - name: Instalar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -24,11 +24,31 @@ jobs:
       - name: Instalar dependências do sistema
         run: |
           sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk \
-          autoconf libtool pkg-config zlib1g-dev \
-          libncurses5-dev libncursesw5-dev libtinfo5 cmake \
-          libffi-dev libssl-dev git
+          sudo apt install -y zip unzip openjdk-17-jdk git
 
-      - name: Build APK
+      - name: Instalar Android SDK
+        run: |
+          mkdir -p $HOME/android-sdk
+          cd $HOME/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
+          unzip commandlinetools-linux-10406996_latest.zip
+          mkdir cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/ || true
+
+      - name: Configurar variáveis Android
+        run: |
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+
+      - name: Aceitar licenças
+        run: yes | sdkmanager --licenses
+
+      - name: Instalar plataformas Android
+        run: |
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+
+      - name: Gerar APK
         run: |
           buildozer android debug
