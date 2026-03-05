@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Baixar código
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer
+      - name: Build APK
         uses: digreatbrian/buildozer-action@v2
         with:
-          buildozer_version: stable
-          command: buildozer android debug
+          python-version: 3.10
+          buildozer-cmd: buildozer android debug
