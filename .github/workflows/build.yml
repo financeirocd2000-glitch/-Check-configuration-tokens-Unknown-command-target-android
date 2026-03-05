@@ -11,22 +11,24 @@ jobs:
       - name: Baixar código
         uses: actions/checkout@v4
 
-      - name: Instalar Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Instalar dependências
+      - name: Instalar dependências Python
         run: |
           pip install --upgrade pip
-          pip install cython
-          pip install buildozer
+          pip install cython buildozer
 
       - name: Instalar dependências do sistema
         run: |
           sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk
+          sudo apt install -y zip unzip openjdk-17-jdk \
+          autoconf libtool pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev libtinfo5 cmake \
+          libffi-dev libssl-dev git
 
-      - name: Gerar APK
+      - name: Build APK
         run: |
           buildozer android debug
