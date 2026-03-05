@@ -53,7 +53,11 @@ jobs:
 
       - name: Instalar plataformas Android
         run: |
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+          sdkmanager \
+                      "platform-tools" \
+                      "platforms;android-33" \
+                      "build-tools;33.0.2" \
+                      "cmdline-tools;latest"
 
       - name: Gerar APK
         run: buildozer android debug
