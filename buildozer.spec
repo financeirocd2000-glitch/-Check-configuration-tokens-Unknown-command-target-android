@@ -1,18 +1,50 @@
-[app]
+name: Build APK
 
-title = Coletor Estoque
-package.name = coletor
-package.domain = org.coletor
+on:
+  workflow_dispatch:
 
-source.dir = .
-source.include_exts = py,png,jpg,kv
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-version = 1.0
+    steps:
 
-requirements = python3,kivy,opencv,pyzbar,plyer
+    - name: Checkout
+      uses: actions/checkout@v4
 
-orientation = portrait
+    - name: Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-android.permissions = CAMERA,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+    - name: Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
 
-fullscreen = 0
+    - name: Instalar dependências
+      run: |
+        sudo apt update
+        sudo apt install -y \
+        build-essential \
+        git \
+        zip \
+        unzip \
+        python3-pip \
+        openjdk-17-jdk
+
+    - name: Instalar Buildozer
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: Compilar APK
+      run: |
+        buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk
+        path: bin/*.apk
