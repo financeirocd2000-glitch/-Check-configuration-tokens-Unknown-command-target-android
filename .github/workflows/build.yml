@@ -1,50 +1,30 @@
 name: Build APK
 
-on:
-  workflow_dispatch:
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
+    - uses: actions/checkout@v3
 
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Python
-      uses: actions/setup-python@v5
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: '17'
-
-    - name: Instalar dependências
-      run: |
-        sudo apt update
-        sudo apt install -y \
-        build-essential \
-        git \
-        zip \
-        unzip \
-        python3-pip \
-        openjdk-17-jdk
-
-    - name: Instalar Buildozer
+    - name: Install dependencies
       run: |
         pip install --upgrade pip
         pip install buildozer cython
 
-    - name: Compilar APK
+    - name: Install Android SDK
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-17-jdk unzip
+        yes | sdkmanager --licenses || true
+
+    - name: Build APK
       run: |
         buildozer android debug
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk
-        path: bin/*.apk
