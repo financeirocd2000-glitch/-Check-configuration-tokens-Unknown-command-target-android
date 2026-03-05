@@ -1,5 +1,4 @@
 [app]
-
 title = Coletor
 package.name = coletor
 package.domain = org.coletor
@@ -8,7 +7,6 @@ source.dir = .
 source.include_exts = py,png,jpg,kv
 
 version = 1.0
-
 requirements = python3,kivy,opencv,pyzbar,plyer
 
 orientation = portrait
