@@ -1,50 +1,23 @@
-name: Build APK
+[app]
 
-on:
-  workflow_dispatch:
+# (obrigatório)
+title = MeuApp
+package.name = meuapp
+package.domain = org.meuapp
 
-jobs:
-  build:
-    runs-on: ubuntu-22.04
+source.dir = .
+source.include_exts = py,png,jpg,kv
 
-    steps:
+version = 0.1
 
-    - name: Checkout
-      uses: actions/checkout@v4
+requirements = python3,kivy
 
-    - name: Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+orientation = portrait
+fullscreen = 0
 
-    - name: Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: '17'
-
-    - name: Instalar dependências
-      run: |
-        sudo apt update
-        sudo apt install -y \
-        build-essential \
-        git \
-        zip \
-        unzip \
-        python3-pip \
-        openjdk-17-jdk
-
-    - name: Instalar Buildozer
-      run: |
-        pip install --upgrade pip
-        pip install buildozer cython
-
-    - name: Compilar APK
-      run: |
-        buildozer android debug
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk
-        path: bin/*.apk
+# ANDROID
+android.api = 33
+android.minapi = 21
+android.sdk = 33
+android.ndk = 25b
+android.build_tools_version = 33.0.2
